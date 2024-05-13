@@ -1,0 +1,156 @@
+/* app.css */
+
+/* Light Theme */
+body.light {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+.navbar-light .navbar-brand {
+  color: #212529;
+}
+
+.navbar-light .nav-link {
+  color: #212529;
+}
+
+/* Dark Theme */
+body.dark {
+  background-color: #343a40;
+  color: #f8f9fa;
+}
+
+.navbar-dark .navbar-brand {
+  color: #f8f9fa;
+}
+
+.navbar-dark .nav-link {
+  color: #f8f9fa;
+}
+
+
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+.signup-form {
+  width: 500px;
+  margin: 20% 100px 100px 50%; /* Top margin 50%, Right margin 100px, Bottom margin 100px, Left margin 50% */
+  transform: translate(-50%, -50%); 
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  background-color: rgba(178, 224, 255, 0.8); /* Transparent white background */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  
+}
+
+.signup-form h2 {
+  text-align: center;
+}
+
+.signup-form label {
+  font-weight: bold;
+}
+
+.signup-form input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+
+.signup-form button {
+  width: 100%;
+  padding: 8px;
+  margin-top: 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.signup-form button:hover {
+  background-color: #0056b3;
+}
+
+.signup-form p {
+  text-align: center;
+}
+
+.signup-form a {
+  color: #007bff;
+}
+
+.side_bar {
+  display: flex;
+  position: fixed;
+  top: 0rem;
+
+  height: 100vh;
+  width: 15%;
+  box-shadow: 0px 10px 10px;
+margin-top: 5%;
+  background-color: #c3f2fc;
+  padding-top: 5%;
+
+}
+
+.side_bar li {
+  position: sticky;
+  padding-top: 30px;
+  list-style: none;
+  margin-top: 0;
+  margin-bottom: 10%;
+
+  border-radius: 10px;
+  font-size: 20px;
+  text-align: center;
+}
+
+.side_bar ul {
+  float: left;
+
+}
+
