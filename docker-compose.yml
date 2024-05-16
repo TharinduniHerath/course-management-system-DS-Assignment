@@ -1,0 +1,33 @@
+version: '3.8'
+services:
+  client:
+    build: ./client
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/app  # For live code editing
+      - client-node-modules:/app/node_modules  # Volume for node_modules to speed up container startup time
+    depends_on:
+      - server
+
+  server:
+    build: ./server
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/course-management-project
+    volumes:
+      - ./server:/app  # For live code editing
+      - server-node-modules:/app/node_modules  # Volume for node_modules to speed up container startup time
+    depends_on:
+      - mongodb
+
+  mongodb:
+    image: mongo
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:
+  client-node-modules:  # Volume for client node_modules
+  server-node-modules:  # Volume for server node_modules

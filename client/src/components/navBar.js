@@ -2,11 +2,14 @@ import React, { useState, useEffect } from 'react'; // Import useEffect
 import { Navbar, Nav, Form, FormControl, Button, NavDropdown, Container } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShoppingCart, faBell, faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
+
 
 function NavBar({ isLoggedIn, username, handleLogin, handleLogout, role }) {
   const [notifications, setNotifications] = useState([]);
   const [theme, setTheme] = useState('light');
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
   const navigate = useNavigate();
 
   const addNotification = (notification) => {
@@ -21,6 +24,43 @@ function NavBar({ isLoggedIn, username, handleLogin, handleLogout, role }) {
     document.body.className = initialTheme; // Set the body class to the initial theme
   }, []);
   
+  const handleSearch = async () => {
+  
+    try {
+      const response = await fetch("http://localhost:8000/api/search-courses", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
+       if (!response.ok) {
+         throw new Error("Failed to fetch courses");
+       }
+
+       const data = await response.json();
+       setResults(data);
+        if (data.length > 0) {
+          navigate(`/courses/${data[0]._id}`);
+         
+        } else {
+          console.log("No matching courses found");
+        }
+       
+      
+    } catch (error) {
+      console.error("Error searching for courses:", error);
+    }
+  };
+
+  const handleChange = (event) => {
+    setQuery(event.target.value);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    handleSearch();
+  };
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
@@ -78,9 +118,17 @@ function NavBar({ isLoggedIn, username, handleLogin, handleLogout, role }) {
               <NavDropdown.Item href="#action/3.3">History</NavDropdown.Item>
             </NavDropdown>
           </Nav>
-          <Form className="d-flex flex-grow-1">
-            <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-            <Button variant="outline-success">Search</Button>
+          <Form className="d-flex flex-grow-1" onSubmit={handleSubmit}>
+            <FormControl
+              type="text"
+              placeholder="Search"
+              className="mr-sm-2"
+              value={query}
+              onChange={handleChange}
+            />
+            <Button variant="outline-success" type="submit">
+              Search
+            </Button>
           </Form>
           <Nav>
             {isLoggedIn && (

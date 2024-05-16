@@ -8,18 +8,17 @@ function InstructorDashboard() {
   const [courseContent, setCoursecontent] = useState([]);
   const [editingCourse, setEditingCourse] = useState(null);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
-  const [editSuccess, setEditSuccess] = useState(false);
   const [newCourseSuccess,setNewCourseSuccess] = useState(false);
   const [activeTab, setActiveTab] = useState('profile'); // Default active tab
   const [formData, setFormData] = useState({
-    title: '',
-    course: '',
-    thumbnail: '',
-    category: '',
-    videoTitle: '',
-    videoLink: ''
-
-
+    title: "",
+    image: "",
+    price: "",
+    videoLink: [{ title: "", url: "" }],
+    instructorEmail: "",
+    status: "",
+    totalEnrolled: "",
+    description: "",
   });
 
   useEffect(() => {
@@ -65,14 +64,24 @@ function InstructorDashboard() {
     return () => clearTimeout(timer);
   }, [newCourseSuccess]);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setEditSuccess(false);
-    }, 5000);
-    return () => clearTimeout(timer);
-  }, [editSuccess]);
-
   //-----------------add video
+  const handleVideoLinkChange = (e, index, key) => {
+    const newVideoLinks = [...formData.videoLink];
+    newVideoLinks[index][key] = e.target.value;
+    setFormData({ ...formData, videoLink: newVideoLinks });
+  };
+
+  const addVideoLink = () => {
+    setFormData({
+      ...formData,
+      videoLink: [...formData.videoLink, { title: "", url: "" }],
+    });
+  };
+
+  const removeVideoLink = (index) => {
+    const newVideoLinks = formData.videoLink.filter((_, i) => i !== index);
+    setFormData({ ...formData, videoLink: newVideoLinks });
+  };
   const handleAddVideo = async (videoDetails) => {
     try {
       const token = localStorage.getItem('token');
@@ -107,7 +116,7 @@ function InstructorDashboard() {
         title: course.title,
         price: course.price,
         videoLink: course.videoLink,
-        totalEnrolled: course.totalEnrolled
+       
       });
     };
   
@@ -117,7 +126,7 @@ function InstructorDashboard() {
         title: '',
         price: '',
         videoLink:'',
-        totalEnrolled: ''
+       
       });
     };
   
@@ -143,6 +152,16 @@ function InstructorDashboard() {
         console.error('Error updating course details:', error);
       }
     };
+
+function extractYouTubeID(url) {
+  if (!url) {
+    return null;
+  }
+  const regex =
+    /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"\'&?/ ]{11})/;
+  const match = url.match(regex);
+  return match ? match[1] : null;
+}
 
 
 //-------------------------------------------------------------------------------------------------
@@ -187,35 +206,41 @@ console.log(response);
    // console.log('Course added:', response.data);
       setNewCourseSuccess(true);
     setFormData({
-     title:'' , 
-      image:'',
-      price: '', 
-      videoLink:'',
-      instructorEmail:'', 
-      status:'', 
-      totalenrolled:'',
-      description:''
+      title: "",
+      image: "",
+      price: "",
+      videoLink: [{ title: "", url: "" }],
+      instructorEmail: "",
+      status: "",
+      totalenrolled: "",
+      description: "",
     });
   } catch (error) {
     console.error('Error adding course:', error);
   }
 };
-const handleUpdateContent = async (courseId , title, url) => {
+const handleUpdateContent = async (courseId, videoTitle, videoUrl) => {
   try {
+    console.log(courseId);
+     console.log(videoTitle);
+      console.log(videoUrl);
     const token = localStorage.getItem("token");
     const config = {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     };
-
-    const response =   await axios.put(`http://localhost:8000/api/courses/instructor/addContent/${courseId}`, {title, url});
+    const response = await axios.put(
+      `http://localhost:8000/api/courses/instructor/addContent/${courseId}`,
+      { title: videoTitle, url: videoUrl },
+      config
+    );
     console.log("Course updated:", response.data);
-  
   } catch (error) {
     console.error("Error adding video:", error);
   }
 };
+
 //--------------------------------------------------
   const renderContent = () => {
     switch (activeTab) {
@@ -249,19 +274,14 @@ const handleUpdateContent = async (courseId , title, url) => {
                 Course successfully deleted!
               </div>
             )}
-            {editSuccess && (
-              <div className="alert alert-success" role="alert">
-                Course successfully edited!
-              </div>
-            )}
-
+            
             <Table striped bordered hover>
               <thead>
                 <tr>
                   <th>Title</th>
                   <th>Description</th>
                   <th>price</th>
-
+                  <th>Total Enrolled</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -271,7 +291,7 @@ const handleUpdateContent = async (courseId , title, url) => {
                     <td>{course.title}</td>
                     <td>{course.description}</td>
                     <td>{course.price}</td>
-
+                    <td>{course.totalEnrolled}</td>
                     <td>
                       <Button
                         variant="primary"
@@ -301,6 +321,7 @@ const handleUpdateContent = async (courseId , title, url) => {
                     <Form.Label>Title</Form.Label>
                     <Form.Control
                       type="text"
+                      placeholder="Enter title"
                       value={formData.title}
                       onChange={(e) =>
                         setFormData({ ...formData, title: e.target.value })
@@ -311,34 +332,21 @@ const handleUpdateContent = async (courseId , title, url) => {
                     <Form.Label>Price</Form.Label>
                     <Form.Control
                       type="text"
+                      placeholder="Enter Price"
                       value={formData.price}
                       onChange={(e) =>
                         setFormData({ ...formData, price: e.target.value })
                       }
                     />
                   </Form.Group>
-
-                  <Form.Group controlId="image">
-                    <Form.Label>Image URL</Form.Label>
+                  <Form.Group controlId="videoLink">
+                    <Form.Label>video</Form.Label>
                     <Form.Control
                       type="text"
-                      value={formData.image}
+                      placeholder="Enter price"
+                      value={formData.videoLink}
                       onChange={(e) =>
-                        setFormData({ ...formData, image: e.target.value })
-                      }
-                    />
-                  </Form.Group>
-
-                  <Form.Group controlId="description">
-                    <Form.Label>Description</Form.Label>
-                    <Form.Control
-                      type="text"
-                      value={formData.description}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          description: e.target.value,
-                        })
+                        setFormData({ ...formData, videoLink: e.target.value })
                       }
                     />
                   </Form.Group>
@@ -404,7 +412,31 @@ const handleUpdateContent = async (courseId , title, url) => {
                 />
               </Form.Group>
 
-              
+              {formData.videoLink.map((video, index) => (
+                <div key={index}>
+                  <Form.Group controlId={`videoTitle-${index}`}>
+                    <Form.Label>Video Title</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter video title"
+                      value={video.title}
+                      onChange={(e) => handleVideoLinkChange(e, index, "title")}
+                      className="form-control"
+                    />
+                  </Form.Group>
+
+                  <Form.Group controlId={`videoUrl-${index}`}>
+                    <Form.Label>Video URL</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter video URL"
+                      value={video.url}
+                      onChange={(e) => handleVideoLinkChange(e, index, "url")}
+                      className="form-control"
+                    />
+                  </Form.Group>
+                </div>
+              ))}
 
               <Form.Group controlId="instructorEmail">
                 <Form.Label>Instructor Email</Form.Label>
@@ -434,17 +466,23 @@ const handleUpdateContent = async (courseId , title, url) => {
                   className="form-control"
                 />
               </Form.Group>
-              <Button
-                variant="primary"
-                type="submit"
-                onClick={handleSubmitCourse}
-                className="btn btn-primary mb-3"
-              >
-                Add Course
-              </Button>
-              <Button variant="danger" type="button" className="btn btn-danger mb-3">
-                Cancel
-              </Button>
+              <div className=" d-flex gap-2 mt-3 mb-3">
+                <Button
+                  variant="primary"
+                  type="submit"
+                  onClick={handleSubmitCourse}
+                  className="btn btn-primary"
+                >
+                  Add Course
+                </Button>
+                <Button
+                  variant="danger"
+                  type="button"
+                  className="btn btn-danger"
+                >
+                  Cancel
+                </Button>
+              </div>
             </Form>
           </div>
         );
@@ -464,33 +502,46 @@ const handleUpdateContent = async (courseId , title, url) => {
                     <th>Course</th>
                     <th>Video Title</th>
                     <th>Video</th>
-                    <th>Actions</th>
                   </tr>
                 </thead>
+
                 <tbody>
                   {courses.map((course) => (
                     <tr key={course._id}>
-                      <td>{course.title}</td>
+                      <td>{course.title} </td>
                       <td>
                         {course.videoLink.map((video) => (
-                          <div key={video.title}>{video.title}</div>
+                          <div className="flex mr-3 mb-8" key={video.title}>
+                            {video.title}{" "}
+                            <div className="mt-3">
+                              <Button
+                                variant="primary"
+                                onClick={() => handleEdit(course)}
+                              >
+                                Edit video title
+                              </Button>
+                            </div>
+                          </div>
                         ))}
                       </td>
                       <td>
                         {course.videoLink.map((video) => (
                           <div key={video.url}>
-                            <video src={video.url} controls />
+                            {/* Embed YouTube video */}
+                            <iframe
+                              width="560"
+                              height="315"
+                              src={`https://www.youtube.com/embed/${extractYouTubeID(
+                                video.url
+                              )}`}
+                              frameBorder="0"
+                              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                              title={video.title}
+                              style={{ width: "90%" }}
+                            ></iframe>
                           </div>
                         ))}
-                      </td>
-                      <td>
-                        <Button
-                          variant="primary"
-                          onClick={() => handleEdit(course)}
-                        >
-                          Edit
-                        </Button>{" "}
-                       
                       </td>
                     </tr>
                   ))}
@@ -498,12 +549,12 @@ const handleUpdateContent = async (courseId , title, url) => {
               </Table>
               <Modal show={!!editingCourse} onHide={handleCloseEdit}>
                 <Modal.Header closeButton>
-                  <Modal.Title>Edit Course</Modal.Title>
+                  <Modal.Title>Edit Course Content</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                   <Form>
                     <Form.Group controlId="videoTitle">
-                      <Form.Label> Enter Video Title </Form.Label>
+                      <Form.Label>New Video Title</Form.Label>
                       <Form.Control
                         type="text"
                         placeholder="Enter new title"
@@ -528,7 +579,7 @@ const handleUpdateContent = async (courseId , title, url) => {
                 </Modal.Footer>
               </Modal>
 
-              <h2>Update Course Content</h2>
+              <h2>Add new video to your Course</h2>
               <Form>
                 <Form.Group controlId="courseId">
                   <Form.Label>Select Course</Form.Label>
@@ -566,7 +617,13 @@ const handleUpdateContent = async (courseId , title, url) => {
                 <Button
                   variant="primary"
                   type="submit"
-                  onClick={handleUpdateContent}
+                  onClick={() =>
+                    handleUpdateContent(
+                      formData.courseId,
+                      formData.videoTitle,
+                      formData.videoUrl
+                    )
+                  }
                 >
                   Update Content
                 </Button>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Table, Button } from 'react-bootstrap';
-import NotificationForm from '../components/postNotification'
+
 function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [courses, setCourses] = useState([]);
@@ -196,12 +196,21 @@ console.log(status);
             ))}
           </ul>
         );
-      case "Post Notifications":
+      case "instructorRequirements":
         return (
-          <div>
-            <h5>Post Notifications</h5>
-            <NotificationForm />
-          </div>
+          <ul>
+            {instructorRequirements.map((requirement) => (
+              <li key={requirement.id}>
+                {requirement.description} -{" "}
+                <Button
+                  variant="success"
+                  onClick={() => approveInstructorRequirement(requirement.id)}
+                >
+                  Approve
+                </Button>
+              </li>
+            ))}
+          </ul>
         );
       case "CourseRequests":
         return (
@@ -307,6 +316,7 @@ console.log(status);
         <nav className="col-md-2 d-none d-md-block ">
           <div className="side_bar">
             <ul className="nav flex-column inline-block">
+
               <li className="nav-item">
                 <button
                   className={`nav-link btn ${
@@ -340,16 +350,19 @@ console.log(status);
                 </button>
               </li>
 
-              <li className="nav-item">
+             <li className="nav-item">
                 <button
                   className={`nav-link btn ${
-                    activeTab === "Post Notifications" ? "active" : ""
+                    activeTab === "instructorRequirements" ? "active" : ""
                   }`}
-                  onClick={() => setActiveTab("Post Notifications")}
+                  onClick={() => setActiveTab("instructorRequirements")}
                 >
-                  Post Notifications
+                  Instructor Requirements
                 </button>
               </li>
+                
+             
+
             </ul>
           </div>
         </nav>

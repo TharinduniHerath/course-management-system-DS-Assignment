@@ -14,7 +14,8 @@ import CartDetails from './components/cartComponents/CartDetails';
 import CartHome from "./components/cartComponents/cartHome";
 import './App.css';
 import SuccessPage from './components/Sucess';
-import Notifications from './components/Notifications';
+import Notifications from './pages/Notifications';
+import Courses from './pages/courses'
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -58,7 +59,7 @@ function App() {
           <Route path="/userdashboard" element={<UserDashBoard />} />
           <Route path="/cart" element={<CartDetails />} />
           <Route path="/success" element={<SuccessPage />} />
-          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/courses/:courseId" element={<Courses />} />
         </Routes>
       </Router>
     </AuthProvider>

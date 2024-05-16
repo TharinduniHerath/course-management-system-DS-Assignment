@@ -17,6 +17,10 @@ const courseEnrollSchema = new mongoose.Schema({
     required: true,
   }
 });
+courseEnrollSchema.methods.updateProgress = function(newProgress) {
+  this.progress = newProgress;
+  return this.save();
+};
 
 const CourseEnrollment = mongoose.model('CourseEnrollment', courseEnrollSchema);
 

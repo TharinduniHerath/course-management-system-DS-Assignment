@@ -1,5 +1,4 @@
-
-const CourseEnrollment = require("../models/courseEnrollModel");
+//const CourseEnrollment = require("../models/");
 const stripe = require("stripe")(
   "sk_test_51PFmXUSCOFMCLlCHhow2821cxuXmE2cUeFuvr8oppo4Y2wk7UA01VJbyO5NKgWkHQFJHsOPKWREf2NvrrrNsx9EJ00sMpFshjA"
 );
@@ -41,7 +40,7 @@ const lineItems = cartData.map((course) => {
    res.json({ sessionId: session.id });
   
 
-  await CourseEnrollment.create({ userId, courseId });
+  //await CourseEnrollment.create({ userId, courseId });
 
   } catch (error) {
     console.error('Error creating checkout session:', error);

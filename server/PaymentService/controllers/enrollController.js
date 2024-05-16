@@ -1,5 +1,5 @@
 
-const CourseEnrollment = require("../models/courseEnrollModel");
+const CourseEnrollment = require("../../cartService/models/courseEnrollModel");
 
 module.exports.getEnrolledCourses = async (req, res, next) => {
   try {

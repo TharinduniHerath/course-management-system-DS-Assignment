@@ -96,14 +96,13 @@ function UserDashboard() {
       case 'purchasedCourses':
         return (
           <>
-            <h2> Enrolled courses</h2>
+            <h2> Enrolled courses!! </h2>
             <Table striped bordered hover>
               <thead>
                 <tr>
                   <th>Title</th>
                   <th>Description</th>
                   <th>Instructor</th>
-                  <th>Price</th>
                 </tr>
               </thead>
               <tbody>
@@ -124,11 +123,6 @@ function UserDashboard() {
                         {course.courseId
                           ? course.courseId.instructor
                           : "Instructor Not Available"}
-                      </td>
-                      <td>
-                        {course.courseId
-                          ? course.courseId.price
-                          : "Price Not Available"}
                       </td>
                     </tr>
                   ))}

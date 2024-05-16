@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import './style.css'
 
 
 const NotificationsPage = () => {
@@ -11,14 +10,14 @@ const NotificationsPage = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
-       
+        console.log("working1");
         const token = localStorage.getItem("token");
         const config = {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         };
-console.log("working2");
+        console.log("working2");
         // Fetch current user profile
         const profileResponse = await axios.get(
           "http://localhost:8000/api/user/current",
@@ -45,26 +44,26 @@ console.log("working2");
     fetchNotifications();
   }, []); // Empty dependency array to run effect only once
 
-return (
-  <div className="notifications-page">
-    <h1 className="page-title">Notifications</h1>
-    {!loading ? (
-      notifications.length > 0 ? (
-        <ul className="notification-list">
-          {notifications.map((notification, index) => (
-            <li key={index} className="notification-item">
-              {notification.message}
-            </li>
-          ))}
-        </ul>
+  return (
+    <div className="notifications-page">
+      <h1 className="page-title">Notifications</h1>
+      {!loading ? (
+        notifications.length > 0 ? (
+          <ul className="notification-list">
+            {notifications.map((notification, index) => (
+              <li key={index} className="notification-item">
+                {notification.message}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="no-notifications">No notifications found.</p>
+        )
       ) : (
-        <p className="no-notifications">No notifications found.</p>
-      )
-    ) : (
-      <p className="loading">Loading...</p>
-    )}
-  </div>
-);
-}
+        <p className="loading">Loading...</p>
+      )}
+    </div>
+  );
+};
 
 export default NotificationsPage;
